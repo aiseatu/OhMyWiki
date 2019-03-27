@@ -4,8 +4,17 @@
   "description": "A Wikipedia-like application ",
   "main": "src/server.js",
   "scripts": {
-    "test": "export NODE_ENV=test && jasmine"
+    "test": "export NODE_ENV=test&& jasmine",
+    "start": "node src/server.js"
   },
   "author": "Xiaokang Tang",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "jasmine": "^3.3.1",
+    "request": "^2.83.0"
+  },
+  "dependencies": {
+    "dotenv": "^5.0.0",
+    "express": "^4.16.2"
+  }
 }
