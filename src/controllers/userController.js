@@ -42,16 +42,33 @@ module.exports = {
   },
 
   signIn(req, res, next){
-    passport.authenticate("local")(req, res, function(){
-      if(!req.user){
-        console.log("wrong");
-        req.flash("notice", "Sign in failed. Please try again.");
-        res.redirect("/users/sign_in");
-      } else {
-        req.flash("notice", "You've successfully signed in!");
-        res.redirect("/");
+    //console.log("signing in USER");
+
+    passport.authenticate("local", function(err, user, info) {
+      if(err){
+        return next(err);
       }
-    })
+      if(!user){
+        req.flash("notice", info.message);
+        return res.redirect("/users/sign_in");
+      }
+      req.flash("notice", "Login Success!");
+      req.logIn(user, function(err){
+        if(err){ return next(err); }
+        return res.redirect("/");
+      });
+    })(req, res, next);
+
+    // passport.authenticate("local")(req, res, function(){
+    //   if(!req.user){
+    //     console.log("wrong");
+    //     req.flash("notice", "Sign in failed. Please try again.");
+    //     res.redirect("/users/sign_in");
+    //   } else {
+    //     req.flash("notice", "You've successfully signed in!");
+    //     res.redirect("/");
+    //   }
+    // })
   },
 
   signOut(req, res, next){
