@@ -7,7 +7,7 @@ module.exports = {
     }
     const errors = req.validationErrors();
     if(errors) {
-      console.log(errors);
+      //console.log(errors);
       req.flash("error", errors);
       return res.redirect(req.headers.referer);
     } else {
