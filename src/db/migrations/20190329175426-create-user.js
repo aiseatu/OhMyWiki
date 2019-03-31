@@ -10,10 +10,7 @@ module.exports = {
       },
       email: {
         allowNull: false,
-        unique: {
-          args: true,
-          msg: "Email address already in use!"
-        },
+        unique: true,
         validate: {
           isEmail: { msg: "must be a valid email" }
         },
