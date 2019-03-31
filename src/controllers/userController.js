@@ -1,7 +1,7 @@
 const userQueries = require("../db/queries.users.js");
 const passport = require("passport");
 const sgMail = require("@sendgrid/mail");
-sgMail.setApiKey(***REMOVED***);
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 module.exports = {
 
@@ -25,7 +25,8 @@ module.exports = {
     };
     userQueries.createUser(newUser, (err, user) => {
       if(err){
-        req.flash("error", err);
+        //console.log("ERROR:", err);
+        req.flash("error", [{ location: 'body', param: 'email', msg: err }]);
         res.redirect("/users/sign_up");
       } else{
         passport.authenticate("local")(req, res, () => {
