@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var Wiki = sequelize.define('Wiki', {
+  const Wiki = sequelize.define('Wiki', {
     title: {
       type: DataTypes.STRING,
       allowNull: false

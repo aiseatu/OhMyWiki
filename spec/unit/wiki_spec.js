@@ -48,6 +48,7 @@ describe("Wiki", () => {
         userId: this.user.id
       })
       .then((wiki) => {
+        console.log("working?");
         expect(wiki).not.toBeNull();
         expect(wiki.title).toBe("Dogs");
         done();
@@ -90,5 +91,5 @@ describe("Wiki", () => {
     });
 
   });
-  
+
 });

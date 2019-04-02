@@ -19,6 +19,7 @@ describe("routes : wikis", () => {
       })
       .then((user) => {
         this.user = user;
+        //console.log(this.user);
         Wiki.create({
           title: "Rabbits",
           body: "Rabbits are cute!",
@@ -66,6 +67,38 @@ describe("routes : wikis", () => {
   });
 
   describe("POST /wikis/create", () => {
+    beforeEach((done) => {
+      request.get({
+        url: "http://localhost:3000/auth/fake",
+        form: {
+          role: 0,
+          userId: this.user.id,
+          email: this.user.email
+        }
+      });
+      done();
+
+      // User.create({
+      //   username: "member",
+      //   email: "member@example.com",
+      //   password: "1234567",
+      //   role: 0
+      // }).then((user) => {
+      //   request.get({
+      //     url: "http://localhost:3000/auth/fake",
+      //     form: {
+      //       role: user.role,
+      //       userId: user.id,
+      //       email: user.email
+      //     }
+      //   },
+      //     (err, res, body) => {
+      //       done();
+      //     }
+      //   );
+      // });
+    });
+
     const options = {
       url: `${base}create`,
       form: {
@@ -75,9 +108,8 @@ describe("routes : wikis", () => {
     };
 
     it("should create a new wiki", (done) => {
-      console.log(this.user.id);
+
       request.post(options, (err, res, body) => {
-        console.log(res.statusCode);
         Wiki.findOne({where: {title: "Dogs"}})
         .then((wiki) => {
           expect(wiki.title).toBe("Dogs");
@@ -92,5 +124,93 @@ describe("routes : wikis", () => {
     });
 
   });
+
+  describe("GET /wikis/:id", () => {
+
+    it("should render a view with the selected wiki", (done) => {
+      request.get(`${base}${this.wiki.id}`, (err, res, body) => {
+        expect(err).toBeNull();
+        expect(body).toContain("Rabbits");
+        done();
+      });
+    });
+
+  });
+
+  describe("POST /wikis/:id/destroy", () => {
+
+    // beforeEach((done) => {
+    //   request.get({
+    //     url: "http://localhost:3000/auth/fake",
+    //     form: {
+    //       role: 0,
+    //       userId: 1,
+    //     }
+    //   });
+    //   done();
+    // });
+
+    it("should delete the wiki with the associated ID", (done) => {
+
+      expect(this.wiki.id).toBe(1);
+      request.post(`${base}${this.wiki.id}/destroy`, (err, res, body) => {
+        Wiki.findById(1)
+        .then((wiki) => {
+          expect(err).toBeNull();
+          expect(wiki).toBeNull();
+          done();
+        })
+      });
+    });
+
+  });
+
+  describe("GET /wikis/:id/edit", () => {
+
+    it("should render a view with an edit wiki form", (done) => {
+      request.get(`${base}${this.wiki.id}/edit`, (err, res, body) => {
+        expect(err).toBeNull();
+        expect(body).toContain("Edit");
+        expect(body).toContain("Rabbits");
+        done();
+      });
+    });
+
+  });
+
+  describe("POST /wikis/:id/update", () => {
+
+    beforeEach((done) => {
+      request.get({
+        url: "http://localhost:3000/auth/fake",
+        form: {
+          role: 0,
+          userId: this.user.id,
+        }
+      });
+      done();
+    });
+
+    it("should update wiki with given values", (done) => {
+      const options = {
+        url: `${base}${this.wiki.id}/update`,
+        form: {
+          title: "Holland lop",
+          body: "Smallest bunny."
+        }
+      };
+      request.post(options, (err, res, body) => {
+        expect(err).toBeNull();
+        Wiki.findOne({where: {id: this.wiki.id}})
+        .then((wiki) => {
+          expect(wiki.title).toBe("Holland lop");
+          done();
+        });
+      });
+    });
+
+  });
+
+
 
 });
