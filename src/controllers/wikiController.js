@@ -6,13 +6,23 @@ const Authorizer = require("../policies/application");
 module.exports = {
 
   index(req, res, next){
-    wikiQueries.getAllPublicWikis((err, wikis) => {
-      if(err){
-        res.redirect(500, "static/index");
-      } else {
-        res.render("wikis/index", {wikis});
-      }
-    })
+    if(req.user.role == 1 || req.user.role == 2){
+      wikiQueries.getAllWikis((err, wikis) => {
+        if(err){
+          res.redirect(500, "static/index");
+        } else {
+          res.render("wikis/index", {wikis});
+        }
+      });
+    } else {
+      wikiQueries.getAllPublicWikis((err, wikis) => {
+        if(err){
+          res.redirect(500, "static/index");
+        } else {
+          res.render("wikis/index", {wikis});
+        }
+      })
+    }
   },
 
   new(req, res, next){
@@ -25,7 +35,8 @@ module.exports = {
       let newWiki = {
         title: req.body.title,
         body: req.body.body,
-        userId: req.user.id
+        userId: req.user.id,
+        private: req.body.private
       };
       wikiQueries.addWiki(newWiki, (err, wiki) => {
         if(err){

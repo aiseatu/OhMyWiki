@@ -15,6 +15,31 @@ module.exports = {
     });
   },
 
+  getAllWikis(callback){
+    return Wiki.all()
+    .then((wikis) => {
+      callback(null, wikis);
+    })
+    .catch((err) => {
+      callback(err);
+    });
+  },
+
+  downgradeWikis(req, callback){
+    return Wiki.all()
+    .then((wikis) => {
+      wikis.forEach((wiki) => {
+        if(wiki.userId = req.user.id && wiki.private == true){
+          wiki.update({private: false});
+        }
+      });
+      callback(null, wikis);
+    })
+    .catch((err) => {
+      callback(err);
+    });
+  },
+
   addWiki(newWiki, callback){
     // console.log("DEBUG: queries.wikis.js#addWiki");
     // console.dir(newWiki);

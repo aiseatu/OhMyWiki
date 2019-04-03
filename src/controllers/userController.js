@@ -1,4 +1,5 @@
 const userQueries = require("../db/queries.users.js");
+const wikiQueries = require("../db/queries.wikis.js");
 const passport = require("passport");
 const sgMail = require("@sendgrid/mail");
 const stripe = require("stripe")("sk_test_0j1EiD9Ng2odOvURk1eAzM9700ButAdE2R");
@@ -115,6 +116,14 @@ module.exports = {
       } else {
         req.flash("notice", "You have been downgraded");
         res.redirect("/");
+      }
+    });
+    wikiQueries.downgradeWikis(req, (err, wikis) => {
+      if(err){
+        req.flash("errors", err);
+        res.redirect("/users/downgrade");
+      } else {
+        req.flash("notice", "Your private Wikis have been downgraded");
       }
     });
   }

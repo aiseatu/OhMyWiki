@@ -20,6 +20,15 @@
           <label for="body">Body</label>
           <textarea rows="4" class="form-control" name="body" placeholder="Enter Description"><%= wiki.body %></textarea>
         </div>
+        <% if(currentUser.role == 1 || currentUser.role == 2){ %>
+          <div class="form-group">
+            <label for="private">Will this be a private wiki?</label>
+            <select class="form-control" name="private">
+              <option value='true'>Yes</option>
+              <option selected value='false'>No</option>
+            </select>
+          </div>
+        <% } %>
         <button type="submit" class="btn btn-primary">Update</button>
       </form>
     </main>
