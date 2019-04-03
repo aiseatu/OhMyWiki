@@ -6,7 +6,7 @@ const Authorizer = require("../policies/application");
 module.exports = {
 
   getAllPublicWikis(callback){
-    return Wiki.all({where: {private: false}})
+    return Wiki.all({where: { private: false}})
     .then((wikis) => {
       callback(null, wikis);
     })
