@@ -72,6 +72,7 @@ module.exports = {
   },
 
   getWiki(req, callback){
+    console.log(req.params.id);
     return Wiki.findById(req.params.id, {
       include: [
         {model: Collaborator, as: "collaborators", include: [
@@ -80,7 +81,8 @@ module.exports = {
       ]
     })
     .then((wiki) => {
-      if(wiki.private == false){
+      console.log(wiki.body);
+      if(wiki.private != true){
         callback(null, wiki);
       } else {
         if(req.user.role == 1 || req.user.role == 2){
@@ -106,6 +108,7 @@ module.exports = {
       }
     })
     .catch((err) => {
+      console.log(err);
       callback(err);
     });
   },

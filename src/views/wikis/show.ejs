@@ -21,7 +21,7 @@
 
       <p><%- wiki.body %></p>
 
-      <% if(wiki.collaborators){ %>
+      <% if(wiki.collaborators.length != 0){ %>
         <h3>Collaborators</h3>
         <ul>
           <% wiki.collaborators.forEach((collaborator) => { %>

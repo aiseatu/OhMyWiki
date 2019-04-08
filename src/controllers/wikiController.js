@@ -128,7 +128,7 @@ module.exports = {
   show(req, res, next){
     wikiQueries.getWiki(req, (err, wiki) => {
       if(err || wiki == null){
-        console.log(err);
+        //console.log(err);
         req.flash("notice", err);
 
         res.redirect("/wikis");
@@ -152,7 +152,8 @@ module.exports = {
   },
 
   edit(req, res, next){
-    wikiQueries.getWiki(req.params.id, (err, wiki) => {
+    //console.log(req.params.id);
+    wikiQueries.getWiki(req, (err, wiki) => {
       if(err || wiki == null){
         res.redirect(404, "/");
       } else {
