@@ -1,29 +1,102 @@
 const wikiQueries = require("../db/queries.wikis.js");
 const User =require("../db/models").User;
 const markdown = require("markdown").markdown;
+const Collaborator = require("../db/models").Collaborator;
 
 const Authorizer = require("../policies/application");
 
 module.exports = {
 
   index(req, res, next){
-    if(req.user.role == 1 || req.user.role == 2){
-      wikiQueries.getAllWikis((err, wikis) => {
-        if(err){
-          res.redirect(500, "static/index");
-        } else {
-          res.render("wikis/index", {wikis});
-        }
-      });
-    } else {
+    if(!req.user){
       wikiQueries.getAllPublicWikis((err, wikis) => {
-        if(err){
-          res.redirect(500, "static/index");
-        } else {
-          res.render("wikis/index", {wikis});
-        }
-      })
+           if(err){
+            res.redirect(500, "static/index");
+          } else {
+            res.render("wikis/index", {wikis});
+          }
+        });
+    } else if(req.user.role == 0) {
+        Collaborator.findAll({where: {userId: req.user.id}})
+        .then((collaborator) => {
+          if(collaborator){
+            wikiQueries.getCollaboratorWikis(collaborator[0], (err, wikis) => {
+              if(err){
+                res.redirect(500, "static/index");
+              } else {
+                res.render("wikis/index", {wikis});
+              }
+            })
+          } else {
+            wikiQueries.getAllPublicWikis((err, wikis) => {
+              if(err){
+                res.redirect(500, "static/index");
+              } else {
+                res.render("wikis/index", {wikis});
+              }
+            });
+          }
+        })
+        .catch((err) => {
+          wikiQueries.getAllPublicWikis((err, wikis) => {
+            if(err){
+              res.redirect(500, "static/index");
+            } else {
+              res.render("wikis/index", {wikis});
+            }
+          });
+        });
+    } else {
+      wikiQueries.getAllWikis((err, wikis) => {
+          if(err){
+            res.redirect(500, "static/index");
+          } else {
+            res.render("wikis/index", {wikis});
+          }
+        });
     }
+    // if(req.user.role == 1 || req.user.role == 2){
+    //   wikiQueries.getAllWikis((err, wikis) => {
+    //     if(err){
+    //       res.redirect(500, "static/index");
+    //     } else {
+    //       res.render("wikis/index", {wikis});
+    //     }
+    //   });
+    // } else if(req.user.role == 0){
+    //   Collaborator.findAll({where: {userId: req.user.id}})
+    //   .then((collaborator) => {
+    //     if(collaborator){
+    //       wikiQueries.getCollaboratorWikis(collaborator[0], (err, wikis) => {
+    //         if(err){
+    //           res.redirect(500, "static/index");
+    //         } else {
+    //           res.render("wikis/index", {wikis});
+    //         }
+    //       })
+    //     } else {
+    //       wikiQueries.getAllPublicWikis((err, wikis) => {
+    //         if(err){
+    //           res.redirect(500, "static/index");
+    //         } else {
+    //           res.render("wikis/index", {wikis});
+    //         }
+    //       });
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     req.flash("error", err);
+    //     res.redirect("static/index");
+    //   });
+    // } else {
+    //   wikiQueries.getAllPublicWikis((err, wikis) => {
+    //     if(err){
+    //       res.redirect(500, "static/index");
+    //     } else {
+    //       res.render("wikis/index", {wikis});
+    //     }
+    //   });
+    // }
   },
 
   new(req, res, next){
@@ -53,11 +126,16 @@ module.exports = {
   },
 
   show(req, res, next){
-    wikiQueries.getWiki(req.params.id, (err, wiki) => {
+    wikiQueries.getWiki(req, (err, wiki) => {
       if(err || wiki == null){
-        res.redirect(404, "/");
+        console.log(err);
+        req.flash("notice", err);
+
+        res.redirect("/wikis");
+
       } else {
         wiki.body = markdown.toHTML(wiki.body);
+
         res.render("wikis/show", {wiki});
       }
     });

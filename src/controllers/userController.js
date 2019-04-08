@@ -46,7 +46,7 @@ module.exports = {
   },
 
   signIn(req, res, next){
-    console.log("signing in USER");
+    //console.log("signing in USER");
 
     passport.authenticate("local", function(err, user, info) {
       if(err){
