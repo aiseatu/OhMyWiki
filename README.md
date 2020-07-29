@@ -22,10 +22,10 @@ This is a web app inspired by Wikipedia. It incorporated features including Mark
 The App has the following features:
 
 1, standard user sign up, sign in & sign out
-![Screenshot of landing page](https://imgur.com/Ydl6PMq)
+![screenshot of landing page](https://i.imgur.com/Ydl6PMq.png)
 
 2, perform CRUD on Wikis
-![Screenshot of wiki page](https://imgur.com/lG6gpyf)
+![Screenshot of wiki page](https://i.imgur.com/lG6gpyf.png)
 
 3, Allows standard users to upgrade to premium in order to use private Wiki feature and invite collaborators
-![Screenshot of sendgrid page](https://imgur.com/whr7LFM)
+![Screenshot of sendgrid page](https://i.imgur.com/whr7LFM.png)
